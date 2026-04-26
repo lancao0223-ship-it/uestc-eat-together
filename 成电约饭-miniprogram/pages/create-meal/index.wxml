@@ -1,0 +1,94 @@
+<view class="page-create">
+  <view class="form-card">
+    <!-- Time -->
+    <view class="form-group">
+      <text class="form-label required">时间</text>
+      <picker mode="multiSelector" bindchange="onTimeChange" value="{{[0,0]}}" range="{{[['今天','明天','后天'], ['11:00','12:00','17:30','18:00','18:30','19:00','19:30','20:00']]}}">
+        <view class="picker-value {{form.time ? '' : 'placeholder'}}">
+          {{form.time || '选择约饭时间'}}
+        </view>
+      </picker>
+    </view>
+
+    <!-- Location -->
+    <view class="form-group">
+      <text class="form-label required">地点</text>
+      <input
+        class="form-input"
+        placeholder="输入餐厅或地点名称"
+        value="{{form.location}}"
+        bindinput="onInput"
+        data-field="location"
+      />
+    </view>
+
+    <!-- People Limit -->
+    <view class="form-group">
+      <text class="form-label">人数上限</text>
+      <picker bindchange="onPeopleChange" value="2" range="{{['2人','3人','4人','5人','6人','8人']}}">
+        <view class="picker-value">{{form.peopleLimit}} 人</view>
+      </picker>
+    </view>
+
+    <!-- Cost Type -->
+    <view class="form-group">
+      <text class="form-label">消费方式</text>
+      <picker bindchange="onCostChange" value="0" range="{{['AA制','我请客','求请客']}}">
+        <view class="picker-value">{{form.costType}}</view>
+      </picker>
+    </view>
+
+    <!-- Tags -->
+    <view class="form-group">
+      <text class="form-label">口味标签（选填，最多5个）</text>
+      <view class="tag-selector">
+        <view
+          wx:for="{{tagOptions}}"
+          wx:key="*this"
+          class="tag-option {{form.tags.indexOf(item) > -1 ? 'tag-selected' : ''}}"
+          bindtap="onTagToggle"
+          data-tag="{{item}}"
+        >
+          {{item}}
+        </view>
+      </view>
+    </view>
+
+    <!-- Note -->
+    <view class="form-group">
+      <text class="form-label">备注</text>
+      <textarea
+        class="form-textarea"
+        placeholder="写点什么吸引饭搭子吧~"
+        maxlength="100"
+        value="{{form.note}}"
+        bindinput="onInput"
+        data-field="note"
+      />
+      <text class="char-count">{{form.note.length}}/100</text>
+    </view>
+
+    <!-- Safety Options -->
+    <view class="form-group safety-group">
+      <text class="form-label">安全设置</text>
+      <view class="switch-row">
+        <view class="switch-info">
+          <text class="switch-title">仅限女生</text>
+          <text class="switch-desc">开启后仅女生可见和加入</text>
+        </view>
+        <switch checked="{{form.onlyGirls}}" bindchange="onSwitchChange" data-field="onlyGirls" color="#2563EB" />
+      </view>
+      <view class="switch-row">
+        <view class="switch-info">
+          <text class="switch-title">要求体检报告</text>
+          <text class="switch-desc">仅允许上传体检报告的用户加入</text>
+        </view>
+        <switch checked="{{form.requireHealth}}" bindchange="onSwitchChange" data-field="requireHealth" color="#2563EB" />
+      </view>
+    </view>
+  </view>
+
+  <view class="submit-area safe-bottom">
+    <view class="btn-primary submit-btn" bindtap="submit">发布约饭</view>
+  </view>
+</view>

@@ -1,0 +1,66 @@
+/**
+ * 约饭列表 Mock 数据
+ */
+
+module.exports = [
+  {
+    id: 1,
+    host: {
+      nickname: '爱吃火锅的小张',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=zhang',
+      creditScore: 95,
+      gender: 'male',
+      hasHealthReport: true,
+    },
+    time: '今天 18:30',
+    location: '老码头火锅（南门商业街）',
+    peopleLimit: 4,
+    currentPeople: 2,
+    costType: 'AA',
+    tags: ['无辣不欢', '火锅控', '社交达人'],
+    note: '3=1，已经定好位置，来一个不事儿多的小伙伴！',
+    createdAt: '10分钟前',
+    onlyGirls: false,
+    requireHealth: false,
+  },
+  {
+    id: 2,
+    host: {
+      nickname: '小陈今天吃什么',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=chen',
+      creditScore: 88,
+      gender: 'female',
+      hasHealthReport: true,
+    },
+    time: '明天 12:00',
+    location: '轻食主义（商业街二楼）',
+    peopleLimit: 3,
+    currentPeople: 1,
+    costType: 'AA',
+    tags: ['清淡口味', '减脂期', '女生局'],
+    note: '轻食拼单，女生优先~',
+    createdAt: '30分钟前',
+    onlyGirls: true,
+    requireHealth: true,
+  },
+  {
+    id: 3,
+    host: {
+      nickname: '阿伟',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=wei',
+      creditScore: 72,
+      gender: 'male',
+      hasHealthReport: false,
+    },
+    time: '今天 19:00',
+    location: '东北饺子馆',
+    peopleLimit: 6,
+    currentPeople: 4,
+    costType: '我请',
+    tags: ['东北菜', '豪爽', '聚餐'],
+    note: '室友过生日，一起热闹热闹！',
+    createdAt: '1小时前',
+    onlyGirls: false,
+    requireHealth: false,
+  },
+]

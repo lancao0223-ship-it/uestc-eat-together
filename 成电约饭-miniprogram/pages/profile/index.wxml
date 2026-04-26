@@ -1,0 +1,106 @@
+<view class="page-profile">
+  <!-- User Header -->
+  <view class="profile-header">
+    <image class="profile-avatar" src="{{user.avatar}}" mode="aspectFill" />
+    <view class="profile-info">
+      <text class="profile-name">{{user.nickname}}</text>
+      <view class="profile-meta">
+        <text>{{user.campus}}</text>
+        <text class="meta-dot">·</text>
+        <text>{{user.college}}</text>
+        <text class="meta-dot">·</text>
+        <text>{{user.grade}}</text>
+      </view>
+      <view class="profile-badges">
+        <view class="gender-badge {{user.gender}}">
+          <text>{{user.gender === 'female' ? '♀' : '♂'}}</text>
+        </view>
+        <view class="credit-badge {{user.creditScore >= 90 ? 'high' : user.creditScore >= 80 ? 'mid' : 'low'}}">
+          <text>信用 {{user.creditScore}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Stats -->
+  <view class="stats-card">
+    <view class="stat-item">
+      <text class="stat-num">{{stats.hosted}}</text>
+      <text class="stat-label">发起约饭</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num">{{stats.joined}}</text>
+      <text class="stat-label">加入约饭</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num" style="color: {{stats.noShow > 0 ? 'var(--danger)' : 'var(--success)'}};">{{stats.noShow}}</text>
+      <text class="stat-label">爽约次数</text>
+    </view>
+  </view>
+
+  <!-- Health Report Section -->
+  <view class="profile-card">
+    <view class="card-header">
+      <text class="card-title">健康体检报告</text>
+      <text class="card-subtitle">非必填，上传后可获得「已体检」标识</text>
+    </view>
+
+    <block wx:if="{{user.hasHealthReport}}">
+      <view class="health-status">
+        <view class="health-icon-box success">
+          <text class="health-icon">✓</text>
+        </view>
+        <view class="health-info">
+          <text class="health-status-text">已上传体检报告</text>
+          <text class="health-date">上传日期：{{user.healthReportDate}}</text>
+          <text class="health-expiry">有效期至：{{user.healthReportExpiry}}</text>
+        </view>
+      </view>
+      <view class="health-actions">
+        <view class="btn-outline" bindtap="previewReport">查看报告</view>
+        <view class="btn-outline danger" bindtap="deleteReport">删除报告</view>
+      </view>
+    </block>
+
+    <block wx:else>
+      <view class="health-empty">
+        <view class="health-icon-box muted">
+          <text class="health-icon">📋</text>
+        </view>
+        <text class="health-empty-title">尚未上传体检报告</text>
+        <text class="health-empty-desc">上传后可获得绿色「已体检」标识，让其他用户更放心地与您约饭</text>
+        <view class="btn-primary upload-btn" bindtap="uploadHealthReport">
+          <text>上传体检报告</text>
+        </view>
+        <text class="privacy-hint">报告仅展示「已上传」状态，内容不对其他用户公开</text>
+      </view>
+    </block>
+  </view>
+
+  <!-- Taste Tags -->
+  <view class="profile-card">
+    <view class="card-header">
+      <text class="card-title">我的口味标签</text>
+      <text class="edit-link" bindtap="editTags">编辑</text>
+    </view>
+    <view class="tag-row">
+      <view wx:for="{{tasteTags}}" wx:key="*this" class="tag tag-primary">{{item}}</view>
+    </view>
+  </view>
+
+  <!-- Menu List -->
+  <view class="profile-card menu-card">
+    <view wx:for="{{menuItems}}" wx:key="label" class="menu-item" bindtap="goToMenu" data-url="{{item.url}}">
+      <text class="menu-icon">{{item.icon}}</text>
+      <text class="menu-label">{{item.label}}</text>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- Footer -->
+  <view class="profile-footer">
+    <text>成电约饭 v1.0</text>
+  </view>
+</view>

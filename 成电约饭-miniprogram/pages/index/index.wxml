@@ -1,0 +1,175 @@
+<view class="page-container">
+  <!-- Campus Selector -->
+  <view class="campus-bar">
+    <view class="campus-picker">
+      <text class="campus-icon">📍</text>
+      <text class="campus-name">清水河校区</text>
+      <text class="campus-arrow">▾</text>
+    </view>
+    <view class="filter-btn" bindtap="toggleFilterPanel">
+      <text>筛选</text>
+    </view>
+  </view>
+
+  <!-- Tab Switcher -->
+  <view class="tab-bar">
+    <view
+      class="tab-item {{currentTab === 'meal' ? 'tab-active' : ''}}"
+      bindtap="switchTab"
+      data-key="meal"
+    >
+      <text>约饭</text>
+    </view>
+    <view
+      class="tab-item {{currentTab === 'group' ? 'tab-active' : ''}}"
+      bindtap="switchTab"
+      data-key="group"
+    >
+      <text>外卖凑单</text>
+    </view>
+  </view>
+
+  <!-- Filter Panel -->
+  <view class="filter-panel {{showFilterPanel ? 'show' : ''}}">
+    <view class="filter-row">
+      <text class="filter-label">仅看女生局</text>
+      <switch checked="{{filters.onlyGirls}}" bindchange="onFilterChange" data-field="onlyGirls" />
+    </view>
+    <view class="filter-row">
+      <text class="filter-label">仅看已体检用户</text>
+      <switch checked="{{filters.onlyHealth}}" bindchange="onFilterChange" data-field="onlyHealth" />
+    </view>
+  </view>
+
+  <!-- Meal Feed -->
+  <block wx:if="{{currentTab === 'meal'}}">
+    <scroll-view scroll-y class="feed-scroll" refresher-enabled refresher-triggered="{{loading && page === 1}}" bindrefresherrefresh="onPullDownRefresh">
+      <view class="feed-list">
+        <block wx:for="{{meals}}" wx:key="id">
+          <view class="meal-card-wrapper" bindtap="goToDetail" data-id="{{item.id}}">
+            <!-- Host Info Row -->
+            <view class="host-row">
+              <image class="host-avatar" src="{{item.host.avatar}}" mode="aspectFill" />
+              <view class="host-meta">
+                <view class="host-name-line">
+                  <text class="host-name">{{item.host.nickname}}</text>
+                  <view class="gender-badge {{item.host.gender}}">
+                    <text>{{item.host.gender === 'female' ? '♀' : '♂'}}</text>
+                  </view>
+                  <view wx:if="{{item.host.hasHealthReport}}" class="health-badge">
+                    <text>已体检</text>
+                  </view>
+                </view>
+                <view class="host-sub">
+                  <view class="credit-badge {{item.host.creditScore >= 90 ? 'high' : item.host.creditScore >= 80 ? 'mid' : 'low'}}">
+                    <text>信用 {{item.host.creditScore}}</text>
+                  </view>
+                  <text class="time-ago">{{item.createdAt}}</text>
+                </view>
+              </view>
+            </view>
+
+            <!-- Content -->
+            <view class="meal-content">
+              <view class="meal-note" wx:if="{{item.note}}">{{item.note}}</view>
+
+              <view class="info-grid">
+                <view class="info-item">
+                  <text class="info-icon">🕐</text>
+                  <text class="info-text">{{item.time}}</text>
+                </view>
+                <view class="info-item">
+                  <text class="info-icon">📍</text>
+                  <text class="info-text">{{item.location}}</text>
+                </view>
+                <view class="info-item">
+                  <text class="info-icon">👥</text>
+                  <text class="info-text">{{item.currentPeople}}/{{item.peopleLimit}} 人</text>
+                </view>
+              </view>
+
+              <!-- Tags -->
+              <view class="tag-row">
+                <view class="cost-tag {{item.costType === '我请' ? 'treat' : ''}}">{{item.costType}}</view>
+                <view wx:if="{{item.onlyGirls}}" class="tag tag-female">女生局</view>
+                <view wx:if="{{item.requireHealth}}" class="tag tag-success">需体检报告</view>
+                <view wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this" class="tag tag-primary">{{tag}}</view>
+              </view>
+            </view>
+
+            <!-- Action -->
+            <view class="meal-action">
+              <view class="spots-left">
+                <text class="spots-text">还差 <text class="spots-num">{{item.peopleLimit - item.currentPeople}}</text> 人</text>
+              </view>
+              <view class="btn-cta join-btn" catchtap="">立即加入</view>
+            </view>
+          </view>
+        </block>
+
+        <!-- Loading / Empty -->
+        <view class="loading-footer" wx:if="{{loading}}">
+          <view class="skeleton-line" style="width: 60%;"></view>
+          <view class="skeleton-line" style="width: 40%; margin-top: 16rpx;"></view>
+        </view>
+        <view class="empty-state" wx:if="{{!loading && meals.length === 0}}">
+          <text class="empty-icon">🍽️</text>
+          <text class="empty-title">暂时没有约饭</text>
+          <text class="empty-desc">去发起一个吧，找到你的饭搭子~</text>
+          <view class="btn-primary" style="margin-top: 32rpx;" bindtap="goToCreate">发起约饭</view>
+        </view>
+      </view>
+    </scroll-view>
+  </block>
+
+  <!-- Group Feed -->
+  <block wx:if="{{currentTab === 'group'}}">
+    <scroll-view scroll-y class="feed-scroll">
+      <view class="feed-list">
+        <view class="group-hint">
+          <text class="hint-icon">💡</text>
+          <text class="hint-text">仅展示同宿舍楼的外卖凑单</text>
+        </view>
+
+        <block wx:for="{{groups}}" wx:key="id">
+          <view class="meal-card-wrapper group-card" bindtap="goToGroupDetail" data-id="{{item.id}}">
+            <view class="group-header">
+              <image class="host-avatar" src="{{item.host.avatar}}" mode="aspectFill" />
+              <view class="host-meta">
+                <text class="host-name">{{item.host.nickname}}</text>
+                <text class="text-muted">{{item.dormitory}} · {{item.createdAt}}</text>
+              </view>
+            </view>
+
+            <view class="group-body">
+              <view class="group-merchant">{{item.merchant}}</view>
+              <view class="group-item">{{item.itemName}}</view>
+              <view class="group-progress">
+                <view class="progress-bar">
+                  <view class="progress-fill" style="width: {{(item.currentAmount / item.targetAmount) * 100}}%;"></view>
+                </view>
+                <text class="progress-text">{{item.currentAmount}}/{{item.targetAmount}}元</text>
+              </view>
+            </view>
+
+            <view class="meal-action">
+              <text class="text-muted">{{item.deliveryTime}} 送达</text>
+              <view class="btn-cta">加入凑单</view>
+            </view>
+          </view>
+        </block>
+
+        <view class="empty-state" wx:if="{{!loading && groups.length === 0}}">
+          <text class="empty-icon">🧋</text>
+          <text class="empty-title">暂无凑单</text>
+          <text class="empty-desc">发起一个，和室友一起喝奶茶~</text>
+        </view>
+      </view>
+    </scroll-view>
+  </block>
+
+  <!-- Floating Create Button (only on meal tab) -->
+  <view wx:if="{{currentTab === 'meal'}}" class="fab" bindtap="goToCreate">
+    <text class="fab-icon">+</text>
+  </view>
+</view>

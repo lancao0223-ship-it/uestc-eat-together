@@ -1,0 +1,135 @@
+<view class="page-detail" wx:if="{{meal}}">
+  <!-- Host Info -->
+  <view class="detail-card">
+    <view class="host-header">
+      <image class="host-avatar-large" src="{{meal.host.avatar}}" mode="aspectFill" />
+      <view class="host-info">
+        <view class="host-name-row">
+          <text class="host-name-large">{{meal.host.nickname}}</text>
+          <view class="gender-badge {{meal.host.gender}}">
+            <text>{{meal.host.gender === 'female' ? '♀' : '♂'}}</text>
+          </view>
+          <view wx:if="{{meal.host.hasHealthReport}}" class="health-badge-large">
+            <text>已体检</text>
+          </view>
+        </view>
+        <view class="host-meta-row">
+          <text class="host-meta-text">{{meal.host.college}} · {{meal.host.grade}}</text>
+        </view>
+        <view class="host-credit">
+          <view class="credit-badge {{meal.host.creditScore >= 90 ? 'high' : meal.host.creditScore >= 80 ? 'mid' : 'low'}}">
+            <text>信用 {{meal.host.creditScore}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Meal Info -->
+  <view class="detail-card">
+    <view class="detail-section">
+      <text class="section-title">约饭信息</text>
+      <view class="detail-item">
+        <text class="detail-icon">🕐</text>
+        <view class="detail-content">
+          <text class="detail-label">时间</text>
+          <text class="detail-value">{{meal.time}}</text>
+        </view>
+      </view>
+      <view class="detail-item">
+        <text class="detail-icon">📍</text>
+        <view class="detail-content">
+          <text class="detail-label">地点</text>
+          <text class="detail-value">{{meal.location}}</text>
+        </view>
+      </view>
+      <view class="detail-item">
+        <text class="detail-icon">👥</text>
+        <view class="detail-content">
+          <text class="detail-label">人数</text>
+          <text class="detail-value">{{meal.currentPeople}}/{{meal.peopleLimit}} 人</text>
+        </view>
+      </view>
+      <view class="detail-item">
+        <text class="detail-icon">💰</text>
+        <view class="detail-content">
+          <text class="detail-label">消费方式</text>
+          <text class="detail-value cost-highlight">{{meal.costType}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="detail-divider"></view>
+
+    <view class="detail-section">
+      <text class="section-title">备注</text>
+      <text class="detail-note">{{meal.note}}</text>
+    </view>
+
+    <view class="detail-divider"></view>
+
+    <view class="detail-section">
+      <text class="section-title">口味标签</text>
+      <view class="tag-row">
+        <view wx:for="{{meal.tags}}" wx:key="*this" class="tag tag-primary">{{item}}</view>
+        <view wx:if="{{meal.onlyGirls}}" class="tag tag-female">女生局</view>
+        <view wx:if="{{meal.requireHealth}}" class="tag tag-success">需体检报告</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Participants -->
+  <view class="detail-card">
+    <view class="section-header">
+      <text class="section-title">已加入 ({{participants.length}})</text>
+      <text class="spots-text">还差 <text class="spots-num">{{meal.peopleLimit - meal.currentPeople}}</text> 人</text>
+    </view>
+    <view class="participant-list">
+      <view wx:for="{{participants}}" wx:key="id" class="participant-item" bindtap="goToProfile" data-id="{{item.id}}">
+        <image class="participant-avatar" src="{{item.avatar}}" mode="aspectFill" />
+        <view class="participant-info">
+          <text class="participant-name">{{item.nickname}}</text>
+          <view class="participant-badges">
+            <view class="credit-badge {{item.creditScore >= 90 ? 'high' : item.creditScore >= 80 ? 'mid' : 'low'}}">
+              <text>信用 {{item.creditScore}}</text>
+            </view>
+            <view wx:if="{{item.hasHealthReport}}" class="health-badge-small">
+              <text>已体检</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Temp Chat -->
+  <view class="detail-card chat-card" wx:if="{{hasJoined || isHost}}">
+    <text class="section-title">临时留言板</text>
+    <view class="chat-hint">约饭结束后 2 小时自动关闭</view>
+    <view class="message-list">
+      <view wx:for="{{messages}}" wx:key="id" class="message-item">
+        <image class="message-avatar" src="{{item.user.avatar}}" mode="aspectFill" />
+        <view class="message-body">
+          <view class="message-header">
+            <text class="message-name">{{item.user.nickname}}</text>
+            <text class="message-time">{{item.time}}</text>
+          </view>
+          <text class="message-content">{{item.content}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Bottom Action -->
+  <view class="detail-footer safe-bottom">
+    <block wx:if="{{isHost}}">
+      <view class="btn-danger" bindtap="cancelMeal">取消约饭</view>
+    </block>
+    <block wx:elif="{{hasJoined}}">
+      <view class="btn-secondary">已加入</view>
+    </block>
+    <block wx:else>
+      <view class="btn-primary join-btn-large" bindtap="joinMeal">立即加入</view>
+    </block>
+  </view>
+</view>
